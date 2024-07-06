@@ -5,7 +5,6 @@ import 'package:chat_app/views/widgets/components/filled_outline_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class Body extends StatelessWidget {
@@ -30,21 +29,6 @@ class Body extends StatelessWidget {
             ],
           ),
         ),
-        // Expanded(
-        //   child: ListView.builder(
-        //     itemCount: chatsData.length,
-        //     itemBuilder: (context, index) => ChatCard(
-        //       chat: chatsData[index],
-        //       press: () => Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //           builder: (context) => const MessagesScreen(),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
-
         Expanded(
           child: StreamBuilder(
             stream: FirebaseFirestore.instance.collection('users').snapshots(),
@@ -56,12 +40,27 @@ class Body extends StatelessWidget {
                 separatorBuilder: (context, index) => const Gap(20.0),
                 itemBuilder: (context, index) {
                   final user = users[index];
+                  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+                  final chatRoomId = getChatRoomId(currentUserId, user.id);
+
+                  final lastMessage = user.data().containsKey('lastMessage')
+                      ? user['lastMessage']
+                      : 'No messages yet';
+                  final lastActive = user.data().containsKey('lastActive')
+                      ? user['lastActive']
+                      : 'Unknown';
+                  final imageUrl = user.data().containsKey('imageUrl')
+                      ? user['imageUrl']
+                      : 'https://via.placeholder.com/150';
+                  final isOnline = user.data().containsKey('isOnline')
+                      ? user['isOnline']
+                      : false;
+
+                  final isMe = user.id == currentUserId;
+                  // print(isMe);
+
                   return ChatCard(
                     onPressed: () {
-                      final currentUserId =
-                          FirebaseAuth.instance.currentUser!.uid;
-                      final chatRoomId = getChatRoomId(currentUserId, user.id);
-
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -73,30 +72,14 @@ class Body extends StatelessWidget {
                         ),
                       );
                     },
-                    name: user['username'],
-                    lastMessage: user['email'],
-                    lastActive: "lastActive",
+                    name: isMe ? "Saved massage" : user['username'],
+                    lastMessage: lastMessage,
+                    lastActive: lastActive,
+                    imageUrl: isMe
+                        ? "https://imgs.search.brave.com/IqvW_gBIXwEy9MV39Ri3WFze5QS0QTEhp44s_l4CY7A/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lmludml0ZW1lbWJl/ci5jb20vY29udGVu/dC9pbWFnZXMvc2l6/ZS93NjAwLzIwMjQv/MDcvUHJvbW90ZS15/b3VyLVRlbGVncmFt/LXN1YmNyaWJlcnMt/Ym90LnBuZw"
+                        : imageUrl,
+                    isOnline: isOnline,
                   );
-                  // return ListTile(
-                  //   onTap: () {
-                  //     final currentUserId =
-                  //         FirebaseAuth.instance.currentUser!.uid;
-                  //     final chatRoomId = getChatRoomId(currentUserId, user.id);
-
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (_) => ChatScreen(
-                  //           chatRoomId: chatRoomId,
-                  //           receiverId: user.id,
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  //   leading: const CircleAvatar(),
-                  //   title: Text(user['username']),
-                  //   subtitle: Text(user['email']),
-                  // );
                 },
               );
             },

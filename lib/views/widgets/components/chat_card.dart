@@ -7,12 +7,17 @@ class ChatCard extends StatelessWidget {
   final String name;
   final String lastMessage;
   final String lastActive;
+  final String imageUrl;
+  final bool isOnline;
+
   const ChatCard({
     super.key,
     required this.onPressed,
     required this.name,
     required this.lastMessage,
     required this.lastActive,
+    required this.imageUrl,
+    required this.isOnline,
   });
 
   @override
@@ -28,26 +33,27 @@ class ChatCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 25,
-                  backgroundColor: Colors.teal,
+                  backgroundImage: NetworkImage(imageUrl),
                 ),
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    height: 16,
-                    width: 16,
-                    decoration: BoxDecoration(
-                      color: AppStyle.kPrimaryColor,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        width: 3,
+                if (isOnline)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      height: 16,
+                      width: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          width: 3,
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
             Expanded(
