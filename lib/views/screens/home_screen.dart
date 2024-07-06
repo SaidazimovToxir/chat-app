@@ -4,49 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-// class HomeScreen extends StatelessWidget {
-//   const HomeScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("All users"),
-//         centerTitle: true,
-//       ),
-//       body: StreamBuilder(
-//         stream: FirebaseFirestore.instance.collection('users').snapshots(),
-//         builder: (context, snapshot) {
-//           final users = snapshot.data!.docs;
-//           return ListView.separated(
-//             itemCount: users.length,
-//             separatorBuilder: (context, index) => const Gap(20.0),
-//             itemBuilder: (context, index) {
-//               final user = users[index];
-//               return ListTile(
-//                 onTap: () {
-//                   print(user.id);
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(
-//                       builder: (_) => const ChatScreen(),
-//                     ),
-//                   );
-//                 },
-//                 leading: const CircleAvatar(),
-//                 title: Text(user['username']),
-//                 subtitle: Text(user['email']),
-//               );
-//             },
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-// home_screen.dart
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -100,6 +57,7 @@ class HomeScreen extends StatelessWidget {
                       builder: (_) => ChatScreen(
                         chatRoomId: chatRoomId,
                         receiverId: user.id,
+                        name: user['username'],
                       ),
                     ),
                   );
